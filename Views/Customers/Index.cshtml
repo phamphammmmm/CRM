@@ -1,0 +1,139 @@
+﻿@model IEnumerable<Customer_Relationship_Managament.Models.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+    var keyword = ViewBag.keyword as string;
+    var gender = ViewBag.gender as bool?;
+    var isAsc = ViewBag.isAsc as bool?;
+    var colName = ViewBag.colName as string;
+    var index = ViewBag.index as int?;
+    var totalPage = ViewBag.totalPage as int?;
+    var size = ViewBag.size as int?;
+}
+
+@section styles {
+    <style>
+        .active {
+            color: deeppink;
+        }
+    </style>
+}
+
+<h1>("IndexTitle")</h1>
+
+<p>
+    <a asp-action="Create">("CreateNew")</a>
+</p>
+<form asp-action="ImportFromExcel" method="post" enctype="multipart/form-data" class="form-control">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="excelFile">Select Excel File:</label>
+            <input type="file" name="file" class="form-control" accept=".xlsx" required />
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary">Import</button>
+        </div>
+    </div>
+</form>
+<form asp-action="ReadDataFromCCCD" method="post" class="form-control" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-3">
+            <input type="file" class="form-control" accept=".jpg, .jpeg, .png" name="file" />
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-success">Submit!</button>
+        </div>
+    </div>
+</form>
+<form class="khoi-tim-kiem" asp-action="Index">
+    <div class="row">
+        <div class="col-md-5">
+            <input type="text" class="form-control" value="@keyword" name="keyword" placeholder="Fiter keyword" />
+        </div>
+        <div class="col-md-5">
+            <select class="form-control" name="gender" value="@gender">
+                <option value="-1" hidden>Filter Gender</option>
+                <option value="true">Male</option>
+                <option value="false">Female</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-success" type="submit">Filter</button>
+        </div>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a href="@Url.Action("Index","Customers", new { keyword = keyword, gender = gender, colName = "FullName", isAsc = !isAsc })">
+                    @Html.DisplayNameFor(model => model.FullName)
+                </a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index","Customers", new { keyword = keyword, gender = gender, colName = "Country", isAsc = !isAsc })">
+                    @Html.DisplayNameFor(model => model.Country)
+                </a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index","Customers", new { keyword = keyword, gender = gender, colName = "Gender", isAsc = !isAsc })">
+                    @Html.DisplayNameFor(model => model.Gender)
+                </a>
+            </th>
+            <th>
+                <a href="@Url.Action("Index","Customers", new { keyword = keyword, gender = gender, colName = "DateOfBirth", isAsc = !isAsc })">
+                    @Html.DisplayNameFor(model => model.DateOfBirth)
+                </a>
+            </th>
+            <th>
+                <a asp-action="ExportToExcel" class="btn btn-primary" download="">Export to Excel</a>
+            </th>
+            <th>QR Code</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    <img src="@item.QRCodeURL" alt="QR Code" width="50" height="50">
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="khoi-phan-trang">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            @for (var i = 0; i < totalPage; i++)
+            {
+                <li class="page-item">
+                    <a class="page-link @(i+1 == index ? "active" : "" )" href="@Url.Action("Index","Customers", new { keyword = keyword,
+                                                                                    gender = gender,
+                                                                                    index = i +1,
+                                                                                    colName = colName,
+                                                                                    isAsc = isAsc,
+                    })">@(i + 1)</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
