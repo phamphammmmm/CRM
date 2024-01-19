@@ -229,7 +229,6 @@ namespace Customer_Relationship_Managament.Controllers
             try
             {
                 await _customerService.ReadDataFromCCCD(file);
-
                 TempData["message"] = "Đọc thông tin thành công!";
                 return RedirectToAction("Index");
             }
