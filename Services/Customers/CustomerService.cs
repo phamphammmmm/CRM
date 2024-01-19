@@ -101,7 +101,6 @@ namespace Customer_Relationship_Managament.Services.Customers.Interfaces
             }
         }
 
-
         public Task<Customer> GetCustomerById(int id)
         {
             return _customerRepository.GetCustomerById(id);
@@ -186,6 +185,12 @@ namespace Customer_Relationship_Managament.Services.Customers.Interfaces
                         newCustomer.Gender = resultObject.data[0].sex.ToLower().Equals("nam") ? true : false;
                         newCustomer.DateOfBirth = DateTime.ParseExact(resultObject.data[0].dob, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                         _customerRepository.ReadDataFromCCCD(newCustomer);
+
+                    if(newCustomer != null)
+                    {
+                        newCustomer.QRCodeURL = _qrCodeService.GenerateQRCodeUrl(newCustomer);
+                        Console.WriteLine("Your image's link: " + newCustomer.QRCodeURL);
+                    }
                 }
             }
         }

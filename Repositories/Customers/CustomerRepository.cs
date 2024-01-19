@@ -115,7 +115,7 @@ namespace Customer_Relationship_Managament.Repositories.Customers
         {
                 _context.Customers.Add(customer);
                 _context.SaveChanges();       
-       }
+        }
 
         public async Task<bool> UpdateCustomer(Customer customer)
         {
